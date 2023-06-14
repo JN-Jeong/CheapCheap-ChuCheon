@@ -111,14 +111,14 @@ def main():
             # 제목 추출
             content_title = soup.find("h1")
             if not content_title:
-                logger.info(f"{idx}페이지 {i+1}번째 글 제목 없음")
+                logger.info(f"게시글 제목이 없습니다 - {post_page_url}")
                 continue
             content_title = content_title.text.split("|")[-1].strip()
 
             # 본문 내용 추출
             content = soup.find(class_="mb-4 px-3")
             if not content:
-                logger.info(f"{idx}페이지 {i+1}번째 글 본문 내용 없음")
+                logger.info(f"게시글 본문 내용이 없습니다 - {post_page_url}")
                 content = ""
 
             # 이미지 추출
@@ -130,19 +130,19 @@ def main():
                     if img:
                         images.append(img.get("src"))
                     else:
-                        logger.info(f"{idx}페이지 {i+1}번째 글 ### 이미지 없음 ###")
+                        logger.info(f"게시글 이미지가 없습니다 - {post_page_url}")
                         images.append([])
 
             # 시간 추출
             content_time = soup.find("time")
             if not content_time:
-                logger.info(f"{idx}페이지 {i+1}번째 글 content time 없음")
+                logger.info(f"게시글 content time이 없습니다 - {post_page_url}")
                 content_time = ""
 
             # 구매 링크
             purchase_link = soup.find(class_="pl-3 flex-grow-1 text-break-all")
             if not purchase_link:
-                logger.info(f"{idx}페이지 {i+1}번째 글 purchase link 없음")
+                logger.info(f"게시글 구매 링크가 없습니다 - {post_page_url}")
                 purchase_link = ""
 
             # 작성자 형식 변경
