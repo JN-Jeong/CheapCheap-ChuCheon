@@ -1,0 +1,16 @@
+{
+  "name": "c4",
+  "version": "1.0.0",
+  "description": "expressjs와 mongodb 연결 및 테스트",
+  "main": "index.js",
+  "scripts": {
+    "start": "supervisor index.js"
+  },
+  "author": "cssopy",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.3.0",
+    "supervisor": "^0.12.0"
+  }
+}
