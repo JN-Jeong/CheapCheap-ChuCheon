@@ -11,20 +11,14 @@
         v-for="(row, idx) in categories"
         :key="idx"
         class="btn categoryBtn"
-        v-on:click="setCategoy(row.name)"
+        :class="row.isSel ? 'selBtn' : ''"
+        v-on:click="setCategoy(row.name, idx)"
       >
         {{ row.name }}
       </button>
     </div>
     <table class="boardTable bt1">
       <thead>
-        <colgroup>
-          <col width="20%" />
-          <col width="20%" />
-          <col width="20%" />
-          <col width="20%" />
-          <col width="20%" />
-        </colgroup>
         <tr>
           <th class="th_category">분류</th>
           <th class="th_title">제목</th>
@@ -38,13 +32,6 @@
     <div class="boardTableBody">
       <table class="boardTable">
         <tbody>
-          <colgroup>
-            <col width="20%" />
-            <col width="20%" />
-            <col width="20%" />
-            <col width="20%" />
-            <col width="20%" />
-          </colgroup>
           <tr v-for="(row, idx) in itemsList" :key="idx">
             <td>{{ row.categories }}</td>
             <td>{{ row.title }}</td>
@@ -55,6 +42,26 @@
         </tbody>
       </table>
     </div>
+    <div class="pageGroup">
+      <div class="pageGroupItem pageBack">
+        <button class="btn" v-on:click="movePage(-1)">이전 페이지</button>
+      </div>
+      <div class="pageGroupItem pageCurrent">
+        <input
+          class="pageInputBox"
+          maxlength="7"
+          v-bind:value="dmSearch.pageIndex"
+          v-on:keyup="pageInputBox_keyup"
+        />
+      </div>
+      <div class="pageGroupItem pageGB">&nbsp;/&nbsp;</div>
+      <div class="pageGroupItem pageTotal">
+        {{ Math.ceil(dmSearch.itemsLength / dmSearch.pageSize) }}
+      </div>
+      <div class="pageGroupItem pageNext">
+        <button class="btn" v-on:click="movePage(1)">다음 페이지</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,7 +71,12 @@ export default {
   data() {
     return {
       itemsList: [],
-      dmSearch: { pageSize: 10, pageIndex: 1, category: "전체" },
+      dmSearch: {
+        pageSize: 10,
+        pageIndex: 1,
+        category: "전체",
+        itemsLength: 0,
+      },
       categories: [
         { name: "전체", isSel: true },
         { name: "PC관련", isSel: false },
@@ -75,8 +87,7 @@ export default {
         { name: "모바일", isSel: false },
         { name: "이벤트", isSel: false },
         { name: "쿠폰", isSel: false },
-        { name: "의류", isSel: false },
-        { name: "잡화", isSel: false },
+        { name: "의류잡화", isSel: false },
         { name: "화장품", isSel: false },
         { name: "기타", isSel: false },
       ],
@@ -86,16 +97,56 @@ export default {
     this.search();
   },
   methods: {
-    setCategoy(data) {
+    setCategoy(data, idx) {
       this.dmSearch.category = data;
+      this.dmSearch.pageIndex = 1;
+      for (let i = 0; i < this.categories.length; i++) {
+        if (i == idx) {
+          this.categories[i].isSel = true;
+        } else {
+          this.categories[i].isSel = false;
+        }
+      }
       this.search();
+    },
+    movePage(BN) {
+      if (this.dmSearch.pageIndex == 1 && BN == -1) {
+        return;
+      }
+      if (
+        this.dmSearch.pageIndex ==
+          Math.ceil(this.dmSearch.itemsLength / this.dmSearch.pageSize) &&
+        BN == 1
+      ) {
+        return;
+      }
+
+      this.dmSearch.pageIndex += BN;
+      this.search();
+    },
+    pageInputBox_keyup(e) {
+      if (e.key === "Enter") {
+        if (e.target.value < 1) {
+          this.dmSearch.pageIndex = 1;
+        } else if (
+          e.target.value >
+          Math.ceil(this.dmSearch.itemsLength / this.dmSearch.pageSize)
+        ) {
+          this.dmSearch.pageIndex = Math.ceil(
+            this.dmSearch.itemsLength / this.dmSearch.pageSize
+          );
+        } else {
+          this.dmSearch.pageIndex = Number(e.target.value);
+        }
+        this.search();
+      }
     },
     search() {
       this.$axios
         .post("http://localhost:3000/items", { params: this.dmSearch })
         .then((res) => {
           this.itemsList = res.data.itemsList;
-          console.log(res.data.itemsLength);
+          this.dmSearch.itemsLength = res.data.itemsLength;
         })
         .catch((err) => {
           console.log(err);
@@ -149,8 +200,9 @@ export default {
 }
 
 .boardTableBody {
-  height: 276px;
+  height: 75%;
   overflow-y: auto;
+  margin-bottom: 10px;
 }
 
 .bt1 {
@@ -164,13 +216,40 @@ export default {
 .categoryBtn {
   margin-right: 5px;
   margin-bottom: 2px;
-  background: transparent;
   border-radius: 3px;
   padding: 2px 5px;
-  border: 1px solid white;
+}
+
+.btn {
+  background: #1a1a1a;
+  margin-right: 5px;
+  margin-bottom: 2px;
+
+  border-radius: 3px;
+  padding: 2px 5px;
 }
 
 .btn:hover {
   cursor: pointer;
+  background: transparent;
+}
+
+.pageGroup {
+  text-align: center;
+}
+
+.pageGroupItem {
+  display: inline-block;
+  margin: 0 2px;
+}
+
+.pageInputBox {
+  background: transparent;
+  width: 50px;
+  text-align: center;
+}
+
+.selBtn {
+  background: transparent;
 }
 </style>

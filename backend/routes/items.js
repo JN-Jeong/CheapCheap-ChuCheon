@@ -6,15 +6,19 @@ const Items = require("../models/items");
 router.post("/", (req, res) => {
   let params = req.body.params;
 
-  Items.find(
-    {
-      categories:
-        params.category === "전체" ? { $ne: "" } : { $eq: params.category },
-    },
-    null,
-    { skip: (params.pageIndex - 1) * params.pageSize, limit: params.pageSize }
+  Items.aggregate(
+    [
+      {
+        $match: {
+          categories:
+            params.category === "전체" ? { $ne: "" } : { $eq: params.category },
+        },
+      },
+      { $skip: (params.pageIndex - 1) * params.pageSize },
+      { $limit: params.pageSize },
+    ],
+    { allowDiskUse: true }
   )
-    .sort({ date: -1 })
     .then((items) => {
       let resData = {};
       resData.itemsList = items;
@@ -30,7 +34,9 @@ router.post("/", (req, res) => {
           console.log("데이터 개수 조회 에러 : " + err);
         });
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 module.exports = router;
