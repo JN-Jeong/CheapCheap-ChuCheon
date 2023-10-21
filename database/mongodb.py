@@ -9,10 +9,12 @@ MONGO_URI = os.environ.get("MONGO_URI")
 
 
 class MongoDB:
-    def __init__(self):
+    def __init__(self, db_name, collection_name):
         # Create a new client and connect to the server
         self.client = pymongo.MongoClient(MONGO_URI, server_api=pymongo.server_api.ServerApi("1"))
-        self.collection = self.connect_db("C4", "items")
+        self.db_name = db_name
+        self.collection_name = collection_name
+        self.collection = self.connect_db(self.db_name, self.collection_name)
 
     def connect_db(self, db_name, collection_name):
         # 만약 collection이 없다면 생성
