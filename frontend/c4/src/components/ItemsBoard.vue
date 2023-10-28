@@ -1,5 +1,5 @@
 <template>
-  <div class="body">
+  <div class="itemsBoardBody">
     <div class="btnGroup">
       <button
         v-for="(row, idx) in categories"
@@ -34,7 +34,9 @@
         <tbody>
           <tr v-for="(row, idx) in itemsList" :key="idx" class="item">
             <td>{{ row.categories }}</td>
-            <td>{{ row.title }}</td>
+            <td v-on:click="title_onClick(row._id)">
+              {{ row.title }}
+            </td>
             <td>{{ row.prices }}</td>
             <td>{{ row.members }}</td>
             <td>{{ row.date }}</td>
@@ -143,7 +145,9 @@ export default {
     },
     search() {
       this.$axios
-        .post(process.env.VUE_APP_URL_GET_ITMES, { params: this.dmSearch })
+        .post(process.env.VUE_APP_URL_ITMES + "/selectListOnBoard", {
+          params: this.dmSearch,
+        })
         .then((res) => {
           this.itemsList = res.data.itemsList;
           this.dmSearch.itemsLength = res.data.itemsLength;
@@ -152,12 +156,18 @@ export default {
           console.log(err);
         });
     },
+    title_onClick(row_id) {
+      this.$router.push({
+        name: "Detail",
+        params: { _id: row_id },
+      });
+    },
   },
 };
 </script>
 
 <style scoped>
-.body {
+.itemsBoardBody {
   background-color: #323232;
   min-height: 400px;
   height: 480px;
@@ -194,6 +204,15 @@ td:nth-child(3),
 td:nth-child(4),
 td:nth-child(5) {
   text-align: center;
+}
+
+.item {
+  text-decoration: none;
+}
+
+.item > td:nth-child(2):hover {
+  cursor: pointer;
+  color: aqua;
 }
 
 .btnGroup {

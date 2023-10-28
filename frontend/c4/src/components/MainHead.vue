@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <div class="serviceName">C4</div>
+    <router-link to="/"><div class="serviceName">C4</div></router-link>
   </div>
 </template>
 

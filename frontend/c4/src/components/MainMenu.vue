@@ -1,6 +1,6 @@
 <template>
   <div class="menuBar">
-    <div class="menuItem">메뉴</div>
+    <router-link to="/board"><div class="menuItem">게시글</div></router-link>
   </div>
 </template>
 

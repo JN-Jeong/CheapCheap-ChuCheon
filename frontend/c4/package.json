@@ -9,9 +9,12 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
+    "chart.js": "^4.4.0",
     "core-js": "^3.8.3",
     "material-design-icons-iconfont": "^6.7.0",
     "vue": "^3.2.13",
+    "vue-chartjs": "^5.2.0",
+    "vue-router": "^4.2.4",
     "vuetify": "^3.3.6"
   },
   "devDependencies": {
