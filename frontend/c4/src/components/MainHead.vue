@@ -16,7 +16,18 @@
   display: inline-block;
   height: 100%;
   line-height: 70px;
-  font-size: 40px;
+  font-size: 2.5vw;
   font-weight: 900;
+}
+
+@media screen and (min-width: 320px) {
+  .serviceName {
+    font-size: calc(40px + 6 * ((100vw - 320px) / 1000));
+  }
+}
+@media screen and (min-width: 1000px) {
+  .serviceName {
+    font-size: 45px;
+  }
 }
 </style>

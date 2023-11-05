@@ -27,12 +27,8 @@
       />
     </div>
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
-    <div>
-      <img
-        class="kakao-share"
-        @click="kakaoShare"
-        src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
-      />
+    <div class="kakao-share-back" @click="kakaoShare">
+      <img class="kakao-share" src="../../public/KAKAO_SHARE_IMG.png" />
     </div>
   </div>
   <ItemsBoard />
@@ -165,8 +161,19 @@ export default {
 
 .title {
   text-align: center;
-  font-size: 30px;
   margin-bottom: 20px;
+}
+
+@media screen and (min-width: 320px) {
+  .title {
+    font-size: calc(25px + 6 * ((100vw - 320px) / 1000));
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .title {
+    font-size: 30px;
+  }
 }
 
 .boardInfo {
@@ -188,13 +195,32 @@ export default {
   margin-bottom: 20px;
 }
 
-.kakao-share {
+.kakao-share-back {
   position: fixed;
-  bottom: 50px;
-  right: 50px;
+  bottom: 2vw;
+  right: 2vw;
+  border: 2px solid #cccccc;
+  background-color: #fee500;
+  width: 3.5vw;
+  height: 3.5vw;
+  border-radius: 10px;
+  text-align: center;
 }
 
-.kakao-share:hover {
+.kakao-share-back:hover {
   cursor: pointer;
+  background: yellow;
+}
+
+.kakao-share-back:after {
+  display: inline-block;
+  height: 100%;
+  content: "";
+  vertical-align: middle;
+}
+
+.kakao-share {
+  width: 2.5vw;
+  vertical-align: middle;
 }
 </style>

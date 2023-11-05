@@ -250,7 +250,8 @@ td:nth-child(5) {
 
 .pageInputBox {
   background: transparent;
-  width: 50px;
+  min-width: 40px;
+  width: 2.5vw;
   text-align: center;
 }
 
