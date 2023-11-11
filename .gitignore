@@ -4,5 +4,5 @@ doodling*
 *.env
 jjn/
 backend/node_modules/*
-frontend/node_modules/*
+frontend/c4/node_modules/*
 frontend/package-lock.json
