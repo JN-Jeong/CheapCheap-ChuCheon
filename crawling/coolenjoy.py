@@ -235,6 +235,7 @@ def main():
         sleep(0.2)
 
         if exit_flag:
+            logger.info("DB에 이미 존재하는 데이터가 있습니다. 크롤링을 종료합니다.")
             break
 
     else:
