@@ -46,8 +46,11 @@
     </div>
 
     <div class="pageGroup">
+      <div class="pageGroupItem">
+        <button class="btn" v-on:click="movePageStart()">&lt;&lt;</button>
+      </div>
       <div class="pageGroupItem pageBack">
-        <button class="btn" v-on:click="movePage(-1)">이전 페이지</button>
+        <button class="btn" v-on:click="movePage(-1)">&lt;</button>
       </div>
       <div class="pageGroupItem pageCurrent">
         <input
@@ -62,7 +65,10 @@
         {{ Math.ceil(dmSearch.itemsLength / dmSearch.pageSize) }}
       </div>
       <div class="pageGroupItem pageNext">
-        <button class="btn" v-on:click="movePage(1)">다음 페이지</button>
+        <button class="btn" v-on:click="movePage(1)">&gt;</button>
+      </div>
+      <div class="pageGroupItem">
+        <button class="btn" v-on:click="movePageEnd()">&gt;&gt;</button>
       </div>
     </div>
   </div>
@@ -124,6 +130,16 @@ export default {
       }
 
       this.dmSearch.pageIndex += BN;
+      this.search();
+    },
+    movePageStart() {
+      this.dmSearch.pageIndex = 1;
+      this.search();
+    },
+    movePageEnd() {
+      this.dmSearch.pageIndex = Math.ceil(
+        this.dmSearch.itemsLength / this.dmSearch.pageSize
+      );
       this.search();
     },
     pageInputBox_keyup(e) {
