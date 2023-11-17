@@ -36,10 +36,9 @@ def main():
         db = mongodb.MongoDB(db_name, collection_name)
         logger.info(f"DB : {db_name}, collection : {collection_name}")
 
-    # 페이지가 존재하는지 체크하는 count 값
-    cnt = 0
-    # DB에 존재하는 데이터인지 확인하는 flag
-    exit_flag = False
+    cnt = 0  # 페이지가 존재하는지 체크하는 count 값
+    exit_flag = False  # DB에 존재하는 데이터인지 확인하는 flag
+    db_exist_data_cnt = 0  # DB에 이미 존재하는 데이터 개수
 
     last_page = start
     for idx in tqdm(range(start, end + 1)):
@@ -50,7 +49,9 @@ def main():
         soup = BeautifulSoup(page_source, "html.parser")
 
         # 분류 - class가 "float-left3 d-md-table-cell nw-8 nw-md-auto font-weight-normal py-md-2 px-md-1"인 요소를 추출
-        categories = soup.find_all(class_="float-left3 d-md-table-cell nw-8 nw-md-auto font-weight-normal py-md-2 px-md-1")
+        categories = soup.find_all(
+            class_="float-left3 d-md-table-cell nw-8 nw-md-auto font-weight-normal py-md-2 px-md-1"
+        )
 
         # 제목 - class가 "na-subject"인 요소를 추출
         title = soup.find_all(class_="na-subject")
@@ -73,10 +74,14 @@ def main():
         members = soup.find_all("span", {"class": "sv_wrap"})
 
         # 조회수
-        hits = soup.find_all(class_="float-left float-md-none d-md-table-cell nw-4 nw-md-auto f-sm font-weight-normal py-md-2 pr-md-1")
+        hits = soup.find_all(
+            class_="float-left float-md-none d-md-table-cell nw-4 nw-md-auto f-sm font-weight-normal py-md-2 pr-md-1"
+        )
 
         # 추천수
-        recommendations = soup.find_all(class_="float-left float-md-none d-md-table-cell nw-3 nw-md-auto f-sm font-weight-normal py-md-2 pr-md-1")
+        recommendations = soup.find_all(
+            class_="float-left float-md-none d-md-table-cell nw-3 nw-md-auto f-sm font-weight-normal py-md-2 pr-md-1"
+        )
 
         # 추출한 데이터를 pandas DataFrame으로 저장
         if args.filename:
@@ -152,7 +157,9 @@ def main():
             hit = re.sub(r"\s+", " ", hits[i].text).strip().split(" ")[1]
 
             # 추천수 형식 변경
-            recommendation = re.sub(r"\s+", " ", recommendations[i].text).strip().split(" ")[1]
+            recommendation = (
+                re.sub(r"\s+", " ", recommendations[i].text).strip().split(" ")[1]
+            )
 
             try:
                 content = content.text.strip()
@@ -165,7 +172,9 @@ def main():
                 content_time = ""
 
             try:
-                purchase_link = re.sub(r"\d+회 연결", "", purchase_link.text.strip().replace("\n", "")).strip()
+                purchase_link = re.sub(
+                    r"\d+회 연결", "", purchase_link.text.strip().replace("\n", "")
+                ).strip()
             except:
                 purchase_link = ""
 
@@ -179,8 +188,10 @@ def main():
             if args.update_db and db.is_in({"page_link": post_page_url}):
                 if not args.ignore:  # ignore 옵션이 False라면 코드 종료를 위해 exit_flag를 True로 변경
                     exit_flag = True
-                    break
+                    if db_exist_data_cnt > 20:
+                        break
                 continue_flag = True
+                db_exist_data_cnt += 1
                 logger.info(f"DB에 이미 존재하는 데이터입니다 - {post_page_url}")
 
             if args.filename:
@@ -222,7 +233,9 @@ def main():
             if not os.path.exists(file_name):
                 df.to_csv(file_name, index=False, mode="w", encoding="utf-8-sig")
             else:
-                df.to_csv(file_name, index=False, mode="a", encoding="utf-8-sig", header=False)
+                df.to_csv(
+                    file_name, index=False, mode="a", encoding="utf-8-sig", header=False
+                )
 
             if idx % 500 == 0:
                 logger.info(f"{idx}페이지까지 저장이 완료되었습니다.")
@@ -233,9 +246,9 @@ def main():
         last_page = idx
 
         sleep(0.2)
-
-        if exit_flag:
-            logger.info("DB에 이미 존재하는 데이터가 있습니다. 크롤링을 종료합니다.")
+        # ignore 옵션이 False이고 DB에 이미 존재하는 데이터가 20건 이상이라면 종료
+        if exit_flag and db_exist_data_cnt > 20:
+            logger.info("DB가 최신화 되었습니다. 크롤링을 종료합니다.")
             break
 
     else:
@@ -253,9 +266,19 @@ if __name__ == "__main__":
     parser.add_argument("--filename", "-fn", default=None, type=str)
     parser.add_argument("--start", "-s", type=int, default=1)
     parser.add_argument("--end", "-e", type=int, default=5000)
-    parser.add_argument("--update_db", "-udb", help="if true, crawling data and insert to db (boolean flag)", default=False, type=str2bool)
     parser.add_argument(
-        "--ignore", "-ign", help="if true, continue crawling even if there is data in db (boolean flag)", default=False, type=str2bool
+        "--update_db",
+        "-udb",
+        help="if true, crawling data and insert to db (boolean flag)",
+        default=False,
+        type=str2bool,
+    )
+    parser.add_argument(
+        "--ignore",
+        "-ign",
+        help="if true, continue crawling even if there is data in db (boolean flag)",
+        default=False,
+        type=str2bool,
     )
 
     args, _ = parser.parse_known_args()
@@ -280,10 +303,14 @@ if __name__ == "__main__":
     log_file = f"./logs/{date_now.strftime('%Y.%m.%d')}.log"
     if not os.path.exists("./logs"):
         with open(log_file, "w+") as f:
-            f.write(f"******{date_now.strftime('%Y.%m.%d %H:%M')} Log file Start *****\n")
+            f.write(
+                f"******{date_now.strftime('%Y.%m.%d %H:%M')} Log file Start *****\n"
+            )
     else:
         with open(log_file, "a+") as f:
-            f.write(f"******{date_now.strftime('%Y.%m.%d %H:%M')} Log file Start *****\n")
+            f.write(
+                f"******{date_now.strftime('%Y.%m.%d %H:%M')} Log file Start *****\n"
+            )
 
     LOG_FORMAT = "%(asctime)s - %(message)s"
     formatter = CustomFormatter(LOG_FORMAT)
