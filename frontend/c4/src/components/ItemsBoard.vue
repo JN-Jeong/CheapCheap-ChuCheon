@@ -6,7 +6,7 @@
         :key="idx"
         class="btn categoryBtn"
         :class="row.isSel ? 'selBtn' : ''"
-        v-on:click="setCategoy(row.name, idx)"
+        @click="setCategoy(row.name, idx)"
       >
         {{ row.name }}
       </button>
@@ -48,11 +48,11 @@
     <div class="pageGroup">
       <div class="pageGroupItem pageCurrent">
         <input
-          id="test"
           class="pageInputBox"
           maxlength="7"
-          v-bind:value="dmSearch.pageIndex"
-          v-on:keyup="pageInputBox_keyup"
+          v-model="dmSearch.pageIndex"
+          @blur="checkInputValue"
+          @keyup="pageInputBox_keyup"
         />
       </div>
       <div class="pageGroupItem pageGB">&nbsp;/&nbsp;</div>
@@ -68,7 +68,7 @@
         <button class="btn" v-on:click="movePage(-1)">&lt;</button>
       </div>
       <div class="pageGroupItem">
-        <button class="btn" v-on:click="search()">검색</button>
+        <button class="btn" v-on:click="btn_search_onclick()">검색</button>
       </div>
       <div class="pageGroupItem pageNext">
         <button class="btn" v-on:click="movePage(1)">&gt;</button>
@@ -140,23 +140,34 @@ export default {
     },
     pageInputBox_keyup(e) {
       if (e.key === "Enter") {
-        this.inputValueSearch(e);
+        this.checkInputValue();
+        this.search();
       }
     },
-    inputValueSearch(e) {
-      if (e.target.value < 1) {
+    btn_search_onclick() {
+      this.checkInputValue();
+      this.search();
+    },
+    checkInputValue() {
+      if (isNaN(this.dmSearch.pageIndex)) {
+        if (isNaN(parseInt(this.dmSearch.pageIndex))) {
+          this.dmSearch.pageIndex = 1;
+        } else {
+          this.dmSearch.pageIndex = parseInt(this.dmSearch.pageIndex);
+        }
+        return;
+      }
+
+      if (this.dmSearch.pageIndex < 1) {
         this.dmSearch.pageIndex = 1;
       } else if (
-        e.target.value >
+        this.dmSearch.pageIndex >
         Math.ceil(this.dmSearch.itemsLength / this.dmSearch.pageSize)
       ) {
         this.dmSearch.pageIndex = Math.ceil(
           this.dmSearch.itemsLength / this.dmSearch.pageSize
         );
-      } else {
-        this.dmSearch.pageIndex = Number(e.target.value);
       }
-      this.search();
     },
     search() {
       this.$axios

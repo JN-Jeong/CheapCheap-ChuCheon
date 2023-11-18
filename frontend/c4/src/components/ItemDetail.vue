@@ -5,7 +5,7 @@
     </div>
     <div class="boardInfo">{{ item.date }}</div>
     <div class="content">
-      <p>제품명{{ test }} : 제품명</p>
+      <p>제품명 : 제품명</p>
       <p>가격 : {{ item.prices }}</p>
       <p>
         링크 :
@@ -135,8 +135,6 @@ export default {
 
 .itemsBoardBody {
   background-color: #323232;
-  min-height: 400px;
-  height: 480px;
   margin: 40px;
   padding: 20px;
   margin-left: 10vw;
