@@ -105,11 +105,11 @@ export default {
         objectType: "feed",
         content: {
           title: this.item.title,
-          description: this.item.prices,
+          description: `${this.item.prices}\n${this.item.purchase_link}`,
           imageUrl: this.item.images[0],
           link: {
-            mobileWebUrl: this.item.page_link,
-            webUrl: this.item.page_link,
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
           },
         },
         itemContent: {
@@ -117,22 +117,6 @@ export default {
           titleImageText: "제품명",
           titleImageCategory: this.item.categories,
         },
-        buttons: [
-          {
-            title: "웹 페이지",
-            link: {
-              mobileWebUrl: window.location.href,
-              webUrl: window.location.href,
-            },
-          },
-          {
-            title: "본문 페이지",
-            link: {
-              mobileWebUrl: this.item.page_link,
-              webUrl: this.item.page_link,
-            },
-          },
-        ],
         installTalk: true,
       });
     },
