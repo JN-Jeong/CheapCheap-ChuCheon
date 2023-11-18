@@ -15,7 +15,8 @@
     "vue": "^3.2.13",
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.2.4",
-    "vuetify": "^3.3.6"
+    "vuetify": "^3.3.6",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

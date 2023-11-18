@@ -5,7 +5,7 @@
     </div>
     <div class="boardInfo">{{ item.date }}</div>
     <div class="content">
-      <p>제품명 : 제품명</p>
+      <p>제품명{{ test }} : 제품명</p>
       <p>가격 : {{ item.prices }}</p>
       <p>
         링크 :

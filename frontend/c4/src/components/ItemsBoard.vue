@@ -46,14 +46,9 @@
     </div>
 
     <div class="pageGroup">
-      <div class="pageGroupItem">
-        <button class="btn" v-on:click="movePageStart()">&lt;&lt;</button>
-      </div>
-      <div class="pageGroupItem pageBack">
-        <button class="btn" v-on:click="movePage(-1)">&lt;</button>
-      </div>
       <div class="pageGroupItem pageCurrent">
         <input
+          id="test"
           class="pageInputBox"
           maxlength="7"
           v-bind:value="dmSearch.pageIndex"
@@ -63,6 +58,17 @@
       <div class="pageGroupItem pageGB">&nbsp;/&nbsp;</div>
       <div class="pageGroupItem pageTotal">
         {{ Math.ceil(dmSearch.itemsLength / dmSearch.pageSize) }}
+      </div>
+    </div>
+    <div class="pageGroup">
+      <div class="pageGroupItem">
+        <button class="btn" v-on:click="movePageStart()">&lt;&lt;</button>
+      </div>
+      <div class="pageGroupItem pageBack">
+        <button class="btn" v-on:click="movePage(-1)">&lt;</button>
+      </div>
+      <div class="pageGroupItem">
+        <button class="btn" v-on:click="search()">검색</button>
       </div>
       <div class="pageGroupItem pageNext">
         <button class="btn" v-on:click="movePage(1)">&gt;</button>
@@ -75,30 +81,20 @@
 </template>
 
 <script>
+import { computed } from "vue";
+import { useStore } from "vuex";
+
 export default {
+  setup() {
+    const store = useStore();
+    let dmSearch = computed(() => store.state.dmSearch);
+    let categories = computed(() => store.state.categories);
+
+    return { dmSearch, categories };
+  },
   data() {
     return {
       itemsList: [],
-      dmSearch: {
-        pageSize: 10,
-        pageIndex: 1,
-        category: "전체",
-        itemsLength: 0,
-      },
-      categories: [
-        { name: "전체", isSel: true },
-        { name: "PC관련", isSel: false },
-        { name: "가전", isSel: false },
-        { name: "게임", isSel: false },
-        { name: "식품", isSel: false },
-        { name: "인터넷", isSel: false },
-        { name: "모바일", isSel: false },
-        { name: "이벤트", isSel: false },
-        { name: "쿠폰", isSel: false },
-        { name: "의류잡화", isSel: false },
-        { name: "화장품", isSel: false },
-        { name: "기타", isSel: false },
-      ],
     };
   },
   mounted() {
@@ -144,20 +140,23 @@ export default {
     },
     pageInputBox_keyup(e) {
       if (e.key === "Enter") {
-        if (e.target.value < 1) {
-          this.dmSearch.pageIndex = 1;
-        } else if (
-          e.target.value >
-          Math.ceil(this.dmSearch.itemsLength / this.dmSearch.pageSize)
-        ) {
-          this.dmSearch.pageIndex = Math.ceil(
-            this.dmSearch.itemsLength / this.dmSearch.pageSize
-          );
-        } else {
-          this.dmSearch.pageIndex = Number(e.target.value);
-        }
-        this.search();
+        this.inputValueSearch(e);
       }
+    },
+    inputValueSearch(e) {
+      if (e.target.value < 1) {
+        this.dmSearch.pageIndex = 1;
+      } else if (
+        e.target.value >
+        Math.ceil(this.dmSearch.itemsLength / this.dmSearch.pageSize)
+      ) {
+        this.dmSearch.pageIndex = Math.ceil(
+          this.dmSearch.itemsLength / this.dmSearch.pageSize
+        );
+      } else {
+        this.dmSearch.pageIndex = Number(e.target.value);
+      }
+      this.search();
     },
     search() {
       this.$axios
@@ -185,8 +184,6 @@ export default {
 <style scoped>
 .itemsBoardBody {
   background-color: #323232;
-  min-height: 400px;
-  height: 480px;
   margin: 40px;
   padding: 20px;
 }
@@ -256,6 +253,7 @@ td:nth-child(5) {
 }
 
 .pageGroup {
+  margin-top: 10px;
   text-align: center;
 }
 
