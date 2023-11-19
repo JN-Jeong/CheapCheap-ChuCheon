@@ -155,7 +155,6 @@ export default {
         } else {
           this.dmSearch.pageIndex = parseInt(this.dmSearch.pageIndex);
         }
-        return;
       }
 
       if (this.dmSearch.pageIndex < 1) {
