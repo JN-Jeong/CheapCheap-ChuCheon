@@ -5,18 +5,18 @@
     </div>
     <div class="boardInfo">{{ item.date }}</div>
     <div class="content">
-      <p>제품명 : 제품명</p>
-      <p>가격 : {{ item.prices }}</p>
-      <p>
+      <div>제품명 : 제품명</div>
+      <div>가격 : {{ item.prices }}</div>
+      <div>
         링크 :
         <a :href="item.page_link" target="_blank">{{ item.page_link }}</a>
-      </p>
-      <p>
+      </div>
+      <div>
         구매링크 :
         <a :href="item.purchase_link" target="_blank">{{
           item.purchase_link
         }}</a>
-      </p>
+      </div>
     </div>
     <div class="imgs">
       <img
@@ -106,14 +106,14 @@ export default {
         content: {
           title: this.item.title,
           description: `${this.item.prices}\n${this.item.purchase_link}`,
-          imageUrl: this.item.images[0],
+          imageUrl: window.location.href,
           link: {
             mobileWebUrl: window.location.href,
             webUrl: window.location.href,
           },
         },
         itemContent: {
-          titleImageUrl: this.item.images[0],
+          titleImageUrl: window.location.href,
           titleImageText: "제품명",
           titleImageCategory: this.item.categories,
         },
@@ -165,6 +165,10 @@ export default {
 
 .content {
   margin-bottom: 20px;
+}
+
+a {
+  word-break: break-all;
 }
 
 .imgs {
