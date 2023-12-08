@@ -27,8 +27,12 @@
       />
     </div>
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
-    <div class="kakao-share-back" @click="kakaoShare">
-      <img class="kakao-share" src="../../public/KAKAO_SHARE_IMG.png" />
+    <div class="scroll-move">
+      <div class="scroll-move-item" @click="moveScroll('TOP')">&uarr;</div>
+      <div class="scroll-move-item" @click="moveScroll('BOT')">&darr;</div>
+      <div class="scroll-move-item" @click="kakaoShare">
+        <img class="kakao-share" src="../../public/KAKAO_SHARE_IMG2.png" />
+      </div>
     </div>
   </div>
   <ItemsBoard />
@@ -120,6 +124,13 @@ export default {
         installTalk: true,
       });
     },
+    moveScroll(TB) {
+      if (TB == "TOP") {
+        window.scrollTo(0, 0);
+      } else if (TB == "BOT") {
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    },
   },
 };
 </script>
@@ -181,32 +192,35 @@ a {
   margin-bottom: 20px;
 }
 
-.kakao-share-back {
-  position: fixed;
-  bottom: 2vw;
-  right: 2vw;
-  border: 2px solid #cccccc;
-  background-color: #fee500;
-  width: 3.5vw;
-  height: 3.5vw;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.kakao-share-back:hover {
-  cursor: pointer;
-  background: yellow;
-}
-
-.kakao-share-back:after {
-  display: inline-block;
-  height: 100%;
-  content: "";
-  vertical-align: middle;
-}
-
 .kakao-share {
   width: 2.5vw;
   vertical-align: middle;
+  background-color: black;
+  color: white;
+  border-radius: 100%;
+}
+
+.scroll-move {
+  position: fixed;
+  bottom: 2vw;
+  right: 2vw;
+  width: 3.5vw;
+  height: 10.5vw;
+  text-align: center;
+}
+
+.scroll-move-item {
+  height: 33%;
+  border: 2px solid #cccccc;
+  font-size: 2vw;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
+}
+
+.scroll-move-item:hover {
+  background-color: #aaaaaa;
+  cursor: pointer;
 }
 </style>
